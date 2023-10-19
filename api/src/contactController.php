@@ -48,13 +48,12 @@ class ContactController{
         $inputData = (array) json_decode(file_get_contents("php://input"), true);
         $name = $inputData["nombre"];
         $email = $inputData["email"];
-        $razon = $inputData["razon"];
         $message = $inputData["mensaje"];
         $marca = $inputData["marca"];
         $linea = $inputData["linea"];
         $modelo = $inputData["modelo"];
 
-        $mensaje = "Nombre: $name\n Correo: $email\nMarca: $marca\nLinea: $linea\nModelo: $modelo\nRazon: $razon\nMensaje: $message";
+        $mensaje = "Nombre: $name\n Correo: $email\nMarca: $marca\nLinea: $linea\nModelo: $modelo\nMensaje: $message";
         $status = $this->gateway->sendMailInternal($name, 'autoselect@autoselect.online', 'Cotizacion sobre vehiculo no disponible', $mensaje);
         if(!$status){
           echo $status;

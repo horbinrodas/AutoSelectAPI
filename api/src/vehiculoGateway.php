@@ -6,18 +6,8 @@ class VehiculoGateway{
   public function __construct(Database $database){
     $this->conn = $database->getConnection();
   }
-  public function getVehiculosLista(array $data): array | false{
-    $marca = $data["marca"];
-    $linea = $data["linea"];
-    $modeloMin = $data["minModelo"];
-    $modeloMax = $data["maxModelo"];
-    $sql = "SELECT id, marca, linea, modelo, img_link FROM lista_vehiculos_email WHERE marca='$marca' AND linea ='$linea' AND modelo >= '$modeloMin' AND modelo <= '$modeloMax'";
-    if($marca == "todos"){
-      $sql = "SELECT id, marca, linea, modelo, img_link FROM lista_vehiculos_email WHERE modelo >= $modeloMin AND modelo <= $modeloMax";
-    }
-    else if($linea == "todos"){
-      $sql = "SELECT id, marca, linea, modelo, img_link FROM lista_vehiculos_email WHERE marca='$marca' AND modelo >= $modeloMin AND modelo <= $modeloMax";
-    }
+  public function getVehiculosLista(): array | false{
+    $sql = "SELECT id, marca, linea, modelo, img_link FROM lista_vehiculos_email";
     $stmt = $this->conn->query($sql);
     $data = [];
     while($row = $stmt->fetch(PDO::FETCH_ASSOC)){

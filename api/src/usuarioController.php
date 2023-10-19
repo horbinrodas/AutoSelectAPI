@@ -15,7 +15,7 @@ class UsuarioController{
   private function processResourceRequest(string $method, string $id): void{
     switch($method){
       case "GET":
-        echo json_encode($this->gateway->getUserVehiculos($id));
+        echo json_encode(["userVehiculos"=>$this->gateway->getUserVehiculos($id)]);
         break;
       default: 
         http_response_code(405);
@@ -23,16 +23,21 @@ class UsuarioController{
     }
   }
   private function processCollectionRequest(string $method): void{
-    switch($method){
-      case "GET":
-        $inputData = (array) json_decode(file_get_contents("php://input"), true);
-        $email = $inputData["email"];
-        $pwd = $inputData["pwd"];
-        echo json_encode($this->gateway->checkLogin($email, $pwd));
+    if($method !== "POST"){
+        http_response_code(405);
+        header("Allow: POST");
+        exit;
+    }
+    $inputData = (array) json_decode(file_get_contents("php://input"), true);
+    $action = $inputData["action"];
+    switch($action){
+      case "LOGIN":
+        $email = $inputData["email"] ?? " ";
+        $pwd = $inputData["pwd"] ?? " ";
+        echo json_encode(["usuario"=>$this->gateway->checkLogin($email, $pwd)]);
         break;
-      case "POST":
+      case "REGISTER":
         http_response_code(201);
-        $inputData = (array) json_decode(file_get_contents("php://input"), true);
         $nombre = $inputData["nombre"];
         $apellido = $inputData["apellido"];
         $telefono = $inputData["telefono"];
@@ -47,7 +52,7 @@ class UsuarioController{
         break;
       default:
         http_response_code(405);
-        header("Allow: GET, POST");
+        header("Allow: POST");
     }
   }
 }

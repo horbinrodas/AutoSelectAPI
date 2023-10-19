@@ -21,9 +21,11 @@ class VehiculoController{
       return;
     }
     $vehiculo['img_links'] = $vehiculoImgs;
+    
+    
     switch($method){
       case "GET":
-        echo json_encode($vehiculo);
+        echo json_encode(["vehiculo"=>$vehiculo]);
         break;
       case "POST":
         $inputData = (array) file_get_contents("php://input");
@@ -43,7 +45,7 @@ class VehiculoController{
           "rows" => $rows
         ]);
         break;
-      case "DELETE":
+      case "PATCH":
         $inputData = (array) json_decode(file_get_contents("php://input"), true);
         $rows = $this->gateway->deleteVehiculo($id, $inputData["userID"]);
         
@@ -54,14 +56,13 @@ class VehiculoController{
         break;
       default:
         http_response_code(405);
-        header("Allow: GET, POST, DELETE");
+        header("Allow: GET, POST, PATCH");
     }
   }
   private function processCollectionRequest(string $method): void{
     switch($method){
       case "GET":
-        $inputData = (array) json_decode(file_get_contents("php://input"), true);
-        echo json_encode($this->gateway->getVehiculosLista($inputData));
+        echo json_encode(["vehiculos" => $this->gateway->getVehiculosLista()]);
         break;
       case "POST":
         http_response_code(201);
